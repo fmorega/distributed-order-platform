@@ -20,27 +20,26 @@ public class Order {
   private OrderStatus status;
   private Instant updatedAt;
 
-  private Order(UUID id, List<OrderLine> lines, BigDecimal totalAmount, String currency, String paymentMethodReference, Instant createdAt) {
+  private Order(UUID id, List<OrderLine> lines, BigDecimal totalAmount, String currency,
+                String paymentMethodReference, OrderStatus status, Instant createdAt, Instant updatedAt) {
+
     this.id = id;
     this.lines = List.copyOf(lines);
     this.totalAmount = totalAmount;
     this.currency = currency;
     this.paymentMethodReference = paymentMethodReference;
-    this.status = OrderStatus.PENDING;
+    this.status = status;
     this.createdAt = createdAt;
-    this.updatedAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 
   public static Order create(UUID id, List<OrderLine> lines, BigDecimal totalAmount, String currency, String paymentMethodReference, Instant createdAt) {
     validate(lines, totalAmount, currency, paymentMethodReference);
 
-    return new Order(
-      id,
-      lines,
-      totalAmount,
-      currency,
-      paymentMethodReference,
-      createdAt
+    return new Order(id, lines, totalAmount, currency, paymentMethodReference, OrderStatus.PENDING, createdAt, createdAt);
+  }
+  public static Order restore(UUID id, List<OrderLine> lines, BigDecimal totalAmount, String currency, String paymentMethodReference, OrderStatus status, Instant createdAt, Instant updatedAt) {
+    return new Order(id, lines, totalAmount, currency, paymentMethodReference, status, createdAt, updatedAt
     );
   }
 
