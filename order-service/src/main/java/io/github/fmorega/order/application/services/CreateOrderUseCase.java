@@ -17,15 +17,8 @@ public class CreateOrderUseCase implements CreateOrderServicePort {
 
   @Override
   public Order createOrder(CreateOrderCommand command) {
-
-    Order order = Order.create(
-      UUID.randomUUID(),
-      command.lines(),
-      command.totalAmount(),
-      command.currency(),
-      command.paymentMethodReference(),
-      Instant.now()
-    );
+    Order order = Order.create(UUID.randomUUID(), command.lines(), command.totalAmount(),
+      command.currency(), command.paymentMethodReference(), Instant.now());
 
     return orderRepositoryPort.save(order);
   }
