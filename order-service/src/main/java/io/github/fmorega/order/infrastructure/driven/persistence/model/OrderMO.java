@@ -1,11 +1,22 @@
 package io.github.fmorega.order.infrastructure.driven.persistence.model;
 
 import io.github.fmorega.order.domain.OrderStatus;
-import jakarta.persistence.*;
-import lombok.AccessLevel;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -14,10 +25,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "orders")
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderMO {
 
   @Id
@@ -34,7 +46,7 @@ public class OrderMO {
   @Column(name = "currency", nullable = false, length = 3)
   private String currency;
 
-  @Column(name = "payment_method_reference", nullable = false, length = 255)
+  @Column(name = "payment_method_reference", nullable = false)
   private String paymentMethodReference;
 
   @Column(name = "created_at", nullable = false)
@@ -47,7 +59,4 @@ public class OrderMO {
   @CollectionTable(name = "order_lines", joinColumns = @JoinColumn(name = "order_id"))
   @OrderColumn(name = "line_index")
   private List<OrderLineMO> lines = new ArrayList<>();
-
-  public OrderMO(UUID id, OrderStatus status, BigDecimal totalAmount, String currency, String paymentMethodReference, Instant createdAt, Instant updatedAt, ArrayList<Object> lines) {
-  }
 }

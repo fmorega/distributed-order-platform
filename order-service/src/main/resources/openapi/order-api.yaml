@@ -41,6 +41,10 @@ paths:
 
         '400':
           description: Invalid request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
 
   /orders/{orderId}:
     get:
@@ -65,8 +69,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/OrderResponse'
 
-        '404':
+        '400':
           description: Order not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
 
 components:
   schemas:
@@ -171,3 +179,29 @@ components:
         - PENDING
         - CONFIRMED
         - CANCELLED
+
+    ProblemDetail:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+              - field
+              - message
+            properties:
+              field:
+                type: string
+              message:
+                type: string

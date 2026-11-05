@@ -6,11 +6,13 @@ import io.github.fmorega.order.application.ports.driving.GetOrderServicePort;
 import io.github.fmorega.order.domain.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class GetOrderUseCase implements GetOrderServicePort {
 
   private final OrderRepositoryPort orderRepositoryPort;

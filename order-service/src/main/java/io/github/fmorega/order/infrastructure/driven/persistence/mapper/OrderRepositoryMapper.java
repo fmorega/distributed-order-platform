@@ -2,30 +2,24 @@ package io.github.fmorega.order.infrastructure.driven.persistence.mapper;
 
 import io.github.fmorega.order.domain.Order;
 import io.github.fmorega.order.domain.OrderLine;
-import io.github.fmorega.order.infrastructure.driven.persistence.model.OrderLineMO;
 import io.github.fmorega.order.infrastructure.driven.persistence.model.OrderMO;
-import org.springframework.stereotype.Component;
+import io.github.fmorega.order.infrastructure.driven.persistence.model.OrderLineMO;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
-import java.util.ArrayList;
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
+public interface OrderRepositoryMapper {
 
-@Component
-public class OrderRepositoryMapper {
+  OrderMO toMO(Order order);
 
-  public OrderMO toMO(Order order) {
-    var lines = order.getLines().stream()
-      .map(line -> new OrderLineMO(line.sku(), line.quantity()))
-      .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+  OrderLineMO toMO(OrderLine line);
 
-    return new OrderMO(order.getId(), order.getStatus(), order.getTotalAmount(), order.getCurrency(),
-      order.getPaymentMethodReference(), order.getCreatedAt(), order.getUpdatedAt(), lines);
-  }
-
-  public Order toDomain(OrderMO orderMO) {
-    var lines = orderMO.getLines().stream()
+  default Order toDomain(OrderMO mo) {
+    var lines = mo.getLines().stream()
       .map(line -> new OrderLine(line.getSku(), line.getQuantity()))
       .toList();
 
-    return Order.restore(orderMO.getId(), lines, orderMO.getTotalAmount(), orderMO.getCurrency(),
-      orderMO.getPaymentMethodReference(), orderMO.getStatus(), orderMO.getCreatedAt(), orderMO.getUpdatedAt());
+    return Order.restore(mo.getId(), lines, mo.getTotalAmount(), mo.getCurrency(),
+      mo.getPaymentMethodReference(), mo.getStatus(), mo.getCreatedAt(), mo.getUpdatedAt());
   }
 }

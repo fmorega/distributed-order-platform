@@ -1,6 +1,9 @@
 spring:
   application:
     name: order-service
+  mvc:
+    problemdetails:
+      enabled: true
 
   datasource:
     url: ${ORDER_DB_URL:jdbc:postgresql://localhost:55440/order_db}
@@ -17,3 +20,5 @@ spring:
 
 server:
   port: 8090
+  servlet:
+    context-path: /api/v1

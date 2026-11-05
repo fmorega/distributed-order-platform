@@ -5,6 +5,7 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -23,7 +24,7 @@ public class Order {
   private Order(UUID id, List<OrderLine> lines, BigDecimal totalAmount, String currency,
                 String paymentMethodReference, OrderStatus status, Instant createdAt, Instant updatedAt) {
 
-    this.id = id;
+    this.id = Objects.requireNonNull(id, "Order ID must not be null");
     this.lines = List.copyOf(lines);
     this.totalAmount = totalAmount;
     this.currency = currency;
