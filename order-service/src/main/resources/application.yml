@@ -10,6 +10,15 @@ spring:
     username: ${ORDER_DB_USERNAME:order_user}
     password: ${ORDER_DB_PASSWORD:order_password}
 
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      properties:
+        enable.idempotence: true
+
   jpa:
     open-in-view: false
     hibernate:
