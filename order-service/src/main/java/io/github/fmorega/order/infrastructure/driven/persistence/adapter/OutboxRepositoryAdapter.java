@@ -7,6 +7,10 @@ import io.github.fmorega.order.infrastructure.driven.persistence.repository.Outb
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+
 @Repository
 @RequiredArgsConstructor
 public class OutboxRepositoryAdapter implements OutboxRepositoryPort {
@@ -31,5 +35,27 @@ public class OutboxRepositoryAdapter implements OutboxRepositoryPort {
     mo.setAttempts(0);
 
     outboxMessageJpaRepository.save(mo);
+  }
+
+  @Override
+  public List<OutboxMessage> findPendingForUpdate(int limit) {
+    return outboxMessageJpaRepository.findPendingForUpdate(limit).stream()
+      .map(mo -> new OutboxMessage(
+        mo.getId(), mo.getAggregateId(), mo.getSagaId(), mo.getCorrelationId(),
+        mo.getCausationId(), mo.getMessageType(), mo.getDestination(),
+        mo.getMessageKey(), mo.getVersion(), mo.getPayload(), mo.getCreatedAt()))
+      .toList();
+  }
+
+  @Override
+  public void markPublished(UUID messageId, Instant publishedAt) {
+    OutboxMessageMO mo = outboxMessageJpaRepository.findById(messageId).orElseThrow();
+    mo.setPublishedAt(publishedAt);
+  }
+
+  @Override
+  public void registerFailedAttempt(UUID messageId) {
+    OutboxMessageMO mo = outboxMessageJpaRepository.findById(messageId).orElseThrow();
+    mo.setAttempts(mo.getAttempts() + 1);
   }
 }

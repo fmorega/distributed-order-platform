@@ -27,7 +27,13 @@ spring:
   flyway:
     enabled: true
 
+app:
+  outbox:
+    poll-delay-ms: 5000
+    batch-size: 5
+
 server:
   port: 8090
   servlet:
     context-path: /api/v1
+
